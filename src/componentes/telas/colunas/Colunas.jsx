@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import ColunasContext from "./ColunasContext";
 import Tabela from "./Tabela";
 import Form from "./Form";
+import Home from "../../Home";
+import WithAuth from "../../seg/WithAuth";
 
 function Colunas() {
 
@@ -13,11 +15,32 @@ function Colunas() {
     });
 
     const recuperar = async codigo => {
-        await fetch(`${process.env.REACT_APP_ENDERECO_API}/colunas/${codigo}`)
-            .then(response => response.json())
-            .then(data => setObjeto(data))
-            .catch(err => setAlerta({ "status": "error", "message": err }))
+        try {
+            await fetch(`${process.env.REACT_APP_ENDERECO_API}/colunas/${codigo}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-access-token": Autenticacao.pegaAutenticacao().token
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Erro código: ' + response.status);
+                })
+                .then(data => setObjeto(data))
+				.catch(err => setAlerta({ "status": "error", "message": err }))
+        }
+        catch (err) {
+            console.log('caiu no erro do recuperar por codigo: ' + err);
+            window.location.reload();
+            navigate("/login", { replace: true });
+        }
     }
+
+
 
     const acaoCadastrar = async e => {
         e.preventDefault();
@@ -26,7 +49,9 @@ function Colunas() {
             await fetch(`${process.env.REACT_APP_ENDERECO_API}/colunas`,
                 {
                     method: metodo,
-                    headers: {"Content-Type": "application/json"},
+                    headers:{
+                        "Content-Type": "application/json",
+                        "x-access-token": Autenticacao.pegaAutenticacao().token},
                     body: JSON.stringify(objeto)
                 }).then(response => response.json())
                 .then(json => {
@@ -38,6 +63,8 @@ function Colunas() {
                 })
         } catch (err) {
             setAlerta({ "status": "error", "message": err })
+            window.location.reload();
+            navigate("/login", { replace: true });  
         }
         recuperaColunas();
     }
@@ -49,10 +76,27 @@ function Colunas() {
     }
 
     const recuperaColunas = async () => {
-        await fetch(`${process.env.REACT_APP_ENDERECO_API}/colunas`)
-            .then(response => response.json())
-            .then(data => setListaObjetos(data))
-            .catch(err => setAlerta({ "status": "error", "message": err }))
+            try {
+                await fetch(`${process.env.REACT_APP_ENDERECO_API}/colunas`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-access-token": Autenticacao.pegaAutenticacao().token
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Erro código: ' + response.status)
+                    })
+                    .then(data => setListaObjetos(data))
+                    .catch(err => setAlerta({ "status": "error", "message": err }))
+            } catch (err) {
+                setAlerta({ "status": "error", "message": err })
+                window.location.reload();
+                navigate("/login", { replace: true });
+            }
     }
 
     const remover = async objeto => {
@@ -60,7 +104,13 @@ function Colunas() {
             try {
                 await
                     fetch(`${process.env.REACT_APP_ENDERECO_API}/colunas/${objeto.codigo}`,
-                        { method: "DELETE" })
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-access-token": Autenticacao.pegaAutenticacao().token
+                        }
+                    })
                         .then(response => response.json())
                         .then(json => setAlerta({
                             "status": json.status,
@@ -91,10 +141,11 @@ function Colunas() {
         }>
             <Tabela />
             <Form />
+            <Home />
 
         </ColunasContext.Provider>
     )
 
 }
 
-export default Colunas;
+export default WithAuth(Colunas);

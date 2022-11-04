@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import TarefasContext from "./TarefasContext";
 import Tabela from "./Tabela";
 import Form from "./Form";
+import Home from "../../Home";
+import WithAuth from "../../seg/WithAuth";
+
 
 function Tarefas() {
 
@@ -9,15 +12,34 @@ function Tarefas() {
     const [listaObjetoTarefas, setListaObjetoTarefas] = useState([]);
     const [editar, setEditar] = useState(false);
     const [objetoTarefa, setObjetoTarefa] = useState({
-        codigo: "", titulo: "", corpo: "", coluna : ""
+        codigo: "", titulo: "", corpo: "", coluna: ""
     });
     const [listaColunas, setListaColunas] = useState([]);
 
     const recuperar = async codigo => {
-        await fetch(`${process.env.REACT_APP_ENDERECO_API}/tarefas/${codigo}`)
-            .then(response => response.json())
-            .then(data => setObjetoTarefa(data))
-            .catch(err => setAlerta({ "status": "error", "message": err }))
+        try {
+            await fetch(`${process.env.REACT_APP_ENDERECO_API}/tarefas/${codigo}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-access-token": Autenticacao.pegaAutenticacao().token
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Erro código: ' + response.status);
+                })
+                .then(data => setObjeto(data))
+                .catch(err => setAlerta({ "status": "error", "message": err }))
+        }
+        catch (err) {
+            console.log('caiu no erro do recuperar por codigo: ' + err);
+            window.location.reload();
+            navigate("/login", { replace: true });
+        }
     }
 
     const acaoCadastrar = async e => {
@@ -27,7 +49,10 @@ function Tarefas() {
             await fetch(`${process.env.REACT_APP_ENDERECO_API}/tarefas`,
                 {
                     method: metodo,
-                    headers: {"Content-Type": "application/json"},
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-access-token": Autenticacao.pegaAutenticacao().token
+                    },
                     body: JSON.stringify(objetoTarefa)
                 }).then(response => response.json())
                 .then(json => {
@@ -50,25 +75,65 @@ function Tarefas() {
     }
 
     const recuperaColunas = async () => {
-        await fetch(`${process.env.REACT_APP_ENDERECO_API}/colunas`)
-            .then(response => response.json())
-            .then(data => setListaColunas(data))
-            .catch(err => setAlerta({ "status": "error", "message": err }))
+        try {
+            await fetch(`${process.env.REACT_APP_ENDERECO_API}/colunas`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-access-token": Autenticacao.pegaAutenticacao().token
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Erro código: ' + response.status)
+                })
+                .then(data => setListaObjetos(data))
+                .catch(err => setAlerta({ "status": "error", "message": err }))
+        } catch (err) {
+            setAlerta({ "status": "error", "message": err })
+            window.location.reload();
+            navigate("/login", { replace: true });
+        }
     }
 
     const recuperaTarefas = async () => {
-        await fetch(`${process.env.REACT_APP_ENDERECO_API}/tarefas`)
-            .then(response => response.json())
-            .then(data => setListaObjetoTarefas(data))
-            .catch(err => setAlerta({ "status": "error", "message": err }))
-    }    
+        try {
+            await fetch(`${process.env.REACT_APP_ENDERECO_API}/tarefas`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-access-token": Autenticacao.pegaAutenticacao().token
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Erro código: ' + response.status)
+                })
+                .then(data => setListaObjetos(data))
+                .catch(err => setAlerta({ "status": "error", "message": err }))
+        } catch (err) {
+            setAlerta({ "status": "error", "message": err })
+            window.location.reload();
+            navigate("/login", { replace: true });
+        }
+    }
 
     const remover = async objetoTarefa => {
         if (window.confirm('Deseja remover este objetoTarefa?')) {
             try {
                 await
                     fetch(`${process.env.REACT_APP_ENDERECO_API}/tarefas/${objetoTarefa.codigo}`,
-                        { method: "DELETE" })
+                        {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "x-access-token": Autenticacao.pegaAutenticacao().token
+                            }
+                        })
                         .then(response => response.json())
                         .then(json => setAlerta({
                             "status": json.status,
@@ -100,10 +165,11 @@ function Tarefas() {
         }>
             <Tabela />
             <Form />
+            <Home />
 
         </TarefasContext.Provider>
     )
 
 }
 
-export default Tarefas;
+export default WithAuth(Tarefas)
