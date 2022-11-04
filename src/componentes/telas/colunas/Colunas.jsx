@@ -4,6 +4,8 @@ import Tabela from "./Tabela";
 import Form from "./Form";
 import Home from "../../Home";
 import WithAuth from "../../seg/WithAuth";
+import Autenticacao from "../../seg/Autenticacao";
+import { useNavigate } from "react-router-dom";
 
 function Colunas() {
 
@@ -13,6 +15,8 @@ function Colunas() {
     const [objeto, setObjeto] = useState({
         codigo: "", titulo: ""
     });
+
+    let navigate = useNavigate();
 
     const recuperar = async codigo => {
         try {

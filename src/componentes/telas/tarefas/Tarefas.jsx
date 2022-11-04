@@ -4,6 +4,8 @@ import Tabela from "./Tabela";
 import Form from "./Form";
 import Home from "../../Home";
 import WithAuth from "../../seg/WithAuth";
+import Autenticacao from "../../seg/Autenticacao";
+import { useNavigate } from "react-router-dom";
 
 
 function Tarefas() {
@@ -15,6 +17,8 @@ function Tarefas() {
         codigo: "", titulo: "", corpo: "", coluna: ""
     });
     const [listaColunas, setListaColunas] = useState([]);
+
+    let navigate = useNavigate();
 
     const recuperar = async codigo => {
         try {
@@ -32,7 +36,7 @@ function Tarefas() {
                     }
                     throw new Error('Erro código: ' + response.status);
                 })
-                .then(data => setObjeto(data))
+                .then(data => setObjetoTarefa(data))
                 .catch(err => setAlerta({ "status": "error", "message": err }))
         }
         catch (err) {
@@ -89,7 +93,7 @@ function Tarefas() {
                     }
                     throw new Error('Erro código: ' + response.status)
                 })
-                .then(data => setListaObjetos(data))
+                .then(data => setListaObjetoTarefas(data))
                 .catch(err => setAlerta({ "status": "error", "message": err }))
         } catch (err) {
             setAlerta({ "status": "error", "message": err })
@@ -113,7 +117,7 @@ function Tarefas() {
                     }
                     throw new Error('Erro código: ' + response.status)
                 })
-                .then(data => setListaObjetos(data))
+                .then(data => setListaObjetoTarefas(data))
                 .catch(err => setAlerta({ "status": "error", "message": err }))
         } catch (err) {
             setAlerta({ "status": "error", "message": err })

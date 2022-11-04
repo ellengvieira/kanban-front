@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import React from 'react';
 import Colunas from './componentes/telas/colunas/Colunas';
 import Tarefas from './componentes/telas/tarefas/Tarefas'
+import Login from './componentes/telas/login/Login'
 
 function App() {
   return (
@@ -21,8 +22,8 @@ function App() {
 
         <Route path="/privado" element={<MenuPrivado />}  >
           <Route index element={<Home />} />
-          <Route exact path="/colunas" element={<Colunas />} />
-          <Route exact path="/tarefas" element={<Tarefas />} />
+          <Route exact="true" path="colunas" element={<Colunas />} />
+          <Route exact="true" path="tarefas" element={<Tarefas />} />
           <Route exact="true" path="login" element={<Login />} />
         </Route>
       </Routes>
