@@ -8,7 +8,7 @@ const MenuPrivado = () => {
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
-                    <NavLink className="navbar-brand" aria-current="page" exact to="/privado">API-MUSICA</NavLink>
+                    <NavLink className="navbar-brand" aria-current="page" exact to="/privado">KANBAN</NavLink>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -23,8 +23,8 @@ const MenuPrivado = () => {
                                         Cadastros
                                     </a>
                                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><NavLink className="dropdown-item" exact to="artistas">Artistas</NavLink></li>
-                                        <li><NavLink className="dropdown-item" exact to="musicas">Musicas</NavLink></li>
+                                        <li><NavLink className="dropdown-item" exact to="colunas">Colunas</NavLink></li>
+                                        <li><NavLink className="dropdown-item" exact to="tarefas">Tarefas</NavLink></li>
                                     </ul>
                                 </li>
                             }

@@ -93,7 +93,7 @@ function Tarefas() {
                     }
                     throw new Error('Erro código: ' + response.status)
                 })
-                .then(data => setListaObjetoTarefas(data))
+                .then(data => setListaColunas(data))
                 .catch(err => setAlerta({ "status": "error", "message": err }))
         } catch (err) {
             setAlerta({ "status": "error", "message": err })

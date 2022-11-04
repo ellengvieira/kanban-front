@@ -52,7 +52,7 @@ function Form() {
                 msginvalido="Campo corpo é obrigatório" />
             <div className="form-group">
                 <label htmlFor="selectColuna" className="form-label">
-                    Prédio
+                    Coluna
                 </label>
                 <select required className="form-control"
                     name="coluna" value={objetoTarefa.coluna} id="selectColuna"
